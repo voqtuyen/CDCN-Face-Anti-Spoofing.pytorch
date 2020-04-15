@@ -11,5 +11,7 @@ A single (256x256x3) RGB Image -> |   CDCN   | -> A 32x32 Depth Map
 Depth loss consists of 2 parts:
 1. Squared Euclidean norm loss between predicted depth map and ground truth depth map
 
+![MSE loss](assets/mse-loss.png)
 
-2. Constrastive depth loss  
+2. Contrastive depth loss  
+![Contrastive loss](assets/contrastive-loss.png)
