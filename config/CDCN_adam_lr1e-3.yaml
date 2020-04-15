@@ -1,0 +1,33 @@
+output_dir: 'experiments/output'
+log_dir: 'experiments/log'
+device: '0'
+dataset:
+  name: 'siw+youtu'
+  root: 'data/siw+youtu'
+  augmentation:
+    horizontal_flip: True
+    rotation_range: 10
+    gamma_correction: [1.0/2.2, 2.2/1.0]
+    brightness: 0.5
+    contrast: 0.5
+    saturation: 0.5
+    hue: 0.5
+  train_set: 'train.csv'
+  val_set: 'val.csv'
+  mean: [0.5,0.5,0.5]
+  sigma: [0.5,0.5,0.5]
+model:
+  base: 'CDCN'
+  pretrained: false
+  input_size: [256,256]
+  depth_map_size: [32,32]
+
+train:
+  batch_size: 24
+  optimizer: 'adam'
+  lr: 0.001
+  num_epochs: 100
+  smoothing: True
+val:
+  batch_size: 24
+
