@@ -12,4 +12,4 @@ Depth loss consists of 2 parts:
 1. Squared Euclidean norm loss between predicted depth map and ground truth depth map
 
 
-2. Constrastive depth loss
+2. Constrastive depth loss  
