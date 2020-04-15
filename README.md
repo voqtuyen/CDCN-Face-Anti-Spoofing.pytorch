@@ -1,4 +1,4 @@
-# CDCN-Face-Anti-Spoofing.pytorch
+# Apply Central Difference Convolutional Network (CDCN) for Face Anti Spoofing
 
 ## Installation
 
