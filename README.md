@@ -14,5 +14,5 @@ pip install -r requirements.txt
 
 ## Reference
 
-[1] Yu, Zitong and Zhao, Chenxu and Wang, Zezheng and Qin, Yunxiao and Su, Zhuo and Li, Xiaobai and Zhou, Feng and Zhao, Guoying. Searching Central Difference Convolutional Networks for Face Anti-Spoofing, doi: https://arxiv.org/pdf/2003.04092v1.pdf
+[1] Yu, Zitong and Zhao, Chenxu and Wang, Zezheng and Qin, Yunxiao and Su, Zhuo and Li, Xiaobai and Zhou, Feng and Zhao, Guoying. Searching Central Difference Convolutional Networks for Face Anti-Spoofing, doi: https://arxiv.org/pdf/2003.04092v1.pdf  
 [2] Central Difference Convolutional Networks, doi: https://github.com/ZitongYu/CDCN
