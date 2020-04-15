@@ -4,7 +4,7 @@ This documents aims to summarize the depth loss proposed by Zezheng Wang, Chenxu
 
 ```bash
                           ----------
-(256x256x3) RGB Image -> |   CDCN   | -> 32x32 Depth Map
+A single (256x256x3) RGB Image -> |   CDCN   | -> A 32x32 Depth Map
                           ----------
 ```
 
