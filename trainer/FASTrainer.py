@@ -64,7 +64,7 @@ class FASTrainer(BaseTrainer):
 
             # Update metrics
             self.train_loss_metric.update(loss.item())
-            self.train_acc_metric.update(accuracy.item())
+            self.train_acc_metric.update(accuracy)
 
             print('Epoch: {}, iter: {}, loss: {}, acc: {}'.format(epoch, epoch * len(self.trainloader) + i, self.train_loss_metric.avg, self.train_acc_metric.avg))
 
@@ -98,7 +98,7 @@ class FASTrainer(BaseTrainer):
 
                 # Update metrics
                 self.val_loss_metric.update(loss.item())
-                self.val_acc_metric.update(accuracy.item())
+                self.val_acc_metric.update(accuracy)
 
                 if i == seed:
                     add_visualization_to_tensorboard(self.cfg, epoch, img, preds, targets, score, self.writer)

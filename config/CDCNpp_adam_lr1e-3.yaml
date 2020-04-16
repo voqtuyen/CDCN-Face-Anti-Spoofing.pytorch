@@ -1,6 +1,6 @@
 output_dir: 'experiments/output'
 log_dir: 'experiments/log'
-device: ''
+device: '1'
 dataset:
   name: 'nuaa'
   root: 'data/nuaa'
@@ -22,11 +22,11 @@ model:
   input_size: [256,256]
   depth_map_size: [32,32]
 train:
-  batch_size: 24
+  batch_size: 1
   optimizer: 'adam'
   lr: 0.001
   num_epochs: 100
   smoothing: True
 val:
-  batch_size: 24
+  batch_size: 1
 
