@@ -29,7 +29,7 @@ class FASDataset(Dataset):
             self.label_weight = 0.99
 
 
-    def __get_item__(self, index):
+    def __getitem__(self, index):
         """ Get image, output map and label for a given index
         Args:
             index (int): index of image
@@ -54,7 +54,7 @@ class FASDataset(Dataset):
         if self.transform:
             img = self.transform(img)
 
-        return img, label, depth_map
+        return img, depth_map, label
 
     
     def __len__(self):

@@ -57,6 +57,7 @@ class DepthLoss(nn.Module):
         self.criterion_absolute_loss = nn.MSELoss()
         self.criterion_contrastive_loss = ContrastDepthLoss()
 
+
     def forward(self, predicted_depth_map, gt_depth_map):
         absolute_loss = self.criterion_absolute_loss(predicted_depth_map, gt_depth_map)
         contrastive_loss = self.criterion_contrastive_loss(predicted_depth_map, gt_depth_map)

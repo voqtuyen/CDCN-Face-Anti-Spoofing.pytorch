@@ -4,7 +4,7 @@ import torch
 import torchvision
 from trainer.base import BaseTrainer
 from utils.meters import AvgMeter
-from utils.eval import predict, calc_acc, add_images_tb
+from utils.eval import add_visualization_to_tensorboard, predict, calc_accuracy
 
 
 class FASTrainer(BaseTrainer):
@@ -13,11 +13,11 @@ class FASTrainer(BaseTrainer):
 
         self.network = self.network.to(device)
 
-        self.train_loss_metric = AvgMeter(writer=writer, name='Loss/train', length=len(self.trainloader))
-        self.train_acc_metric = AvgMeter(writer=writer, name='Accuracy/train', length=len(self.trainloader))
+        self.train_loss_metric = AvgMeter(writer=writer, name='Loss/train', num_iter_per_epoch=len(self.trainloader))
+        self.train_acc_metric = AvgMeter(writer=writer, name='Accuracy/train', num_iter_per_epoch=len(self.trainloader))
 
-        self.val_loss_metric = AvgMeter(writer=writer, name='Loss/val', length=len(self.valloader))
-        self.val_acc_metric = AvgMeter(writer=writer, name='Accuracy/val', length=len(self.valloader))
+        self.val_loss_metric = AvgMeter(writer=writer, name='Loss/val', num_iter_per_epoch=len(self.valloader))
+        self.val_acc_metric = AvgMeter(writer=writer, name='Accuracy/val', num_iter_per_epoch=len(self.valloader))
 
 
     def load_model(self):
@@ -49,19 +49,22 @@ class FASTrainer(BaseTrainer):
         self.train_loss_metric.reset(epoch)
         self.train_acc_metric.reset(epoch)
 
-        for i, (img, mask, label) in enumerate(self.trainloader):
-            img, mask, label = img.to(self.device), mask.to(self.device), label.to(self.device)
-            net_mask, net_label = self.network(img)
+        for i, (img, depth_map, label) in enumerate(self.trainloader):
+            img, depth_map, label = img.to(self.device), depth_map.to(self.device), label.to(self.device)
+            net_depth_map, _, _, _, _, _ = self.network(img)
             self.optimizer.zero_grad()
-            loss = self.loss(net_mask, net_label, mask, label)
+            loss = self.criterion(net_depth_map, depth_map)
             loss.backward()
             self.optimizer.step()
 
+            preds, _ = predict(net_depth_map)
+            targets, _ = predict(depth_map)
 
+            accuracy = calc_accuracy(preds, targets)
 
             # Update metrics
-            self.train_loss_metric.update()
-            self.train_acc_metric.update()
+            self.train_loss_metric.update(loss.item())
+            self.train_acc_metric.update(accuracy.item())
 
             print('Epoch: {}, iter: {}, loss: {}, acc: {}'.format(epoch, epoch * len(self.trainloader) + i, self.train_loss_metric.avg, self.train_acc_metric.avg))
 
@@ -83,18 +86,21 @@ class FASTrainer(BaseTrainer):
 
         seed = randint(0, len(self.valloader)-1)
 
-        for i, (img, mask, label) in enumerate(self.valloader):
-            img, mask, label = img.to(self.device), mask.to(self.device), label.to(self.device)
-            net_mask, net_label = self.network(img)
-            loss = self.loss(net_mask, net_label, mask, label)
+        for i, (img, depth_map, label) in enumerate(self.valloader):
+            img, depth_map, label = img.to(self.device), depth_map.to(self.device), label.to(self.device)
+            net_depth_map = self.network(img)
+            loss = self.criterion(net_depth_map, depth_map)
 
+            preds, score = predict(net_depth_map)
+            targets, _ = predict(depth_map)
+
+            accuracy = calc_accuracy(preds, targets)
 
             # Update metrics
-            self.val_loss_metric.update()
-            self.val_acc_metric.update()
+            self.val_loss_metric.update(loss.item())
+            self.val_acc_metric.update(accuracy.item())
 
-            
             if i == seed:
-                add_images_tb(self.cfg, epoch, img, preds, targets, score, self.writer)
+                add_visualization_to_tensorboard(self.cfg, epoch, img, preds, targets, score, self.writer)
 
         return self.val_acc_metric.avg

@@ -9,5 +9,5 @@ class RandomGammaCorrection:
 
 
     def __call__(self, x):
-        gamma = self.min_gamma + random * (self.max_gamma - self.min_gamma)
+        gamma = self.min_gamma + random() * (self.max_gamma - self.min_gamma)
         return TF.adjust_gamma(x, gamma=gamma)

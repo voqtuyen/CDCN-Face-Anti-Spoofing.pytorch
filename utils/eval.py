@@ -26,3 +26,33 @@ def add_visualization_to_tensorboard(cfg, epoch, img_batch, preds, targets, scor
         ImageDraw.Draw(vis_img).text((20,20), 'score {}'.format(score[idx]), (255,0,255))
         tb_img = ts_transform(vis_img)
         writer.add_image('Prediction visualization/{}'.format(idx), tb_img, epoch)
+
+
+def predict(depth_map, threshold):
+    """
+    Convert depth_map estimation to true/fake prediction
+    Args
+        - depth_map: 32x32 depth_map
+        - threshold: threshold between 0 and 1
+    Return
+        Predicted score
+    """
+    with torch.no_grad():
+        score = torch.mean(depth_map, axis=(1,2,3))
+        preds = (score >= threshold).type(torch.FloatTensor)
+
+        return preds, score.item()
+
+
+def calc_accuracy(preds, targets):
+    """
+    Compare preds and targets to calculate accuracy
+    Args
+        - preds: batched predictions
+        - targets: batched targets
+    Return
+        a single accuracy number
+    """
+    with torch.no_grad():
+        equals = torch.mean(preds.eq(targets).type(torch.FloatTensor))
+        return equals.item()

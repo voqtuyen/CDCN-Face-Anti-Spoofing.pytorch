@@ -2,8 +2,8 @@ output_dir: 'experiments/output'
 log_dir: 'experiments/log'
 device: '0'
 dataset:
-  name: 'siw+youtu'
-  root: 'data/siw+youtu'
+  name: 'nuaa'
+  root: 'data/nuaa'
   augmentation:
     horizontal_flip: True
     rotation_range: 10

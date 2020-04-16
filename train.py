@@ -7,6 +7,7 @@ from utils.transform import RandomGammaCorrection
 from utils.utils import read_cfg, get_optimizer, get_device, build_network
 from trainer.FASTrainer import FASTrainer
 from models.loss import DepthLoss
+from torch.optim.lr_scheduler import StepLR
 
 
 cfg = read_cfg(cfg_file="config/CDCNpp_adam_lr1e-3.yaml")
@@ -15,7 +16,9 @@ device = get_device(cfg)
 
 network = build_network(cfg)
 
-optimizer = get_optimizer(cfg)
+optimizer = get_optimizer(cfg, network)
+
+lr_scheduler = StepLR(optimizer=optimizer, step_size=30, gamma=0.1)
 
 criterion = DepthLoss()
 
@@ -41,7 +44,6 @@ train_transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(cfg['dataset']['mean'], cfg['dataset']['sigma'])
 ])
-
 
 val_transform = transforms.Compose([
     transforms.Resize(cfg['model']['input_size']),
@@ -69,14 +71,14 @@ trainloader = torch.utils.data.DataLoader(
     dataset=trainset,
     batch_size=cfg['train']['batch_size'],
     shuffle=True,
-    num_workers=8
+    num_workers=2
 )
 
 valloader = torch.utils.data.DataLoader(
     dataset=valset,
     batch_size=cfg['val']['batch_size'],
     shuffle=True,
-    num_workers=8
+    num_workers=2
 )
 
 trainer = FASTrainer(
@@ -84,7 +86,7 @@ trainer = FASTrainer(
     network=network,
     optimizer=optimizer,
     criterion=criterion,
-    lr_scheduler=None,
+    lr_scheduler=lr_scheduler,
     device=device,
     trainloader=trainloader,
     valloader=valloader,
