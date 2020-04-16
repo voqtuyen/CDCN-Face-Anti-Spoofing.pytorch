@@ -20,7 +20,7 @@ optimizer = get_optimizer(cfg, network)
 
 lr_scheduler = StepLR(optimizer=optimizer, step_size=30, gamma=0.1)
 
-criterion = DepthLoss()
+criterion = DepthLoss(device=device)
 
 writer = SummaryWriter(cfg['log_dir'])
 
