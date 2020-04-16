@@ -4,7 +4,7 @@ import numpy as np
 import torch.nn.functional as F
 
 
-def contrast_depth_conv(input):
+def contrast_depth_conv(input, device):
     ''' compute contrast depth in both of (out, label) '''
     '''
         input  32x32
@@ -19,7 +19,7 @@ def contrast_depth_conv(input):
     
     kernel_filter = np.array(kernel_filter_list, np.float32)
     
-    kernel_filter = torch.from_numpy(kernel_filter.astype(np.float)).float()
+    kernel_filter = torch.from_numpy(kernel_filter.astype(np.float)).float().to(device)
     # weights (in_channel, out_channel, kernel, kernel)
     kernel_filter = kernel_filter.unsqueeze(dim=1)
     
@@ -31,8 +31,9 @@ def contrast_depth_conv(input):
 
 
 class ContrastDepthLoss(nn.Module):    # Pearson range [-1, 1] so if < 0, abs|loss| ; if >0, 1- loss
-    def __init__(self):
+    def __init__(self, device):
         super(ContrastDepthLoss, self).__init__()
+        self.device = device
 
 
     def forward(self, out, label): 
@@ -41,8 +42,8 @@ class ContrastDepthLoss(nn.Module):    # Pearson range [-1, 1] so if < 0, abs|lo
         then get the loss of them
         tf.atrous_convd match tf-versions: 1.4
         '''
-        contrast_out = contrast_depth_conv(out)
-        contrast_label = contrast_depth_conv(label)
+        contrast_out = contrast_depth_conv(out, device=self.device)
+        contrast_label = contrast_depth_conv(label, device=self.device)
 
         criterion_MSE = nn.MSELoss()
     
@@ -52,10 +53,10 @@ class ContrastDepthLoss(nn.Module):    # Pearson range [-1, 1] so if < 0, abs|lo
 
 
 class DepthLoss(nn.Module):
-    def __init__(self):
+    def __init__(self, device):
         super(DepthLoss, self).__init__()
         self.criterion_absolute_loss = nn.MSELoss()
-        self.criterion_contrastive_loss = ContrastDepthLoss()
+        self.criterion_contrastive_loss = ContrastDepthLoss(device=device)
 
 
     def forward(self, predicted_depth_map, gt_depth_map):
