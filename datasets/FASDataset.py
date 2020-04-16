@@ -47,9 +47,9 @@ class FASDataset(Dataset):
         label = np.expand_dims(label, axis=0)
 
         if label == 1:
-            depth_map = np.ones((1, self.depth_map_size[0], self.depth_map_size[1]), dtype=np.float32) * self.label_weight
+            depth_map = np.ones((1, 1, self.depth_map_size[0], self.depth_map_size[1]), dtype=np.float32) * self.label_weight
         else:
-            depth_map = np.ones((1, self.depth_map_size[0], self.depth_map_size[1]), dtype=np.float32) * (1.0 - self.label_weight)
+            depth_map = np.ones((1, 1, self.depth_map_size[0], self.depth_map_size[1]), dtype=np.float32) * (1.0 - self.label_weight)
 
         if self.transform:
             img = self.transform(img)
