@@ -41,7 +41,7 @@ def predict(depth_map, threshold=0.5):
         score = torch.mean(depth_map, axis=(1,2))
         preds = (score >= threshold).type(torch.FloatTensor)
 
-        return preds, score.item()
+        return preds, score
 
 
 def calc_accuracy(preds, targets):
