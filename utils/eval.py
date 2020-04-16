@@ -28,7 +28,7 @@ def add_visualization_to_tensorboard(cfg, epoch, img_batch, preds, targets, scor
         writer.add_image('Prediction visualization/{}'.format(idx), tb_img, epoch)
 
 
-def predict(depth_map, threshold):
+def predict(depth_map, threshold=0.5):
     """
     Convert depth_map estimation to true/fake prediction
     Args
