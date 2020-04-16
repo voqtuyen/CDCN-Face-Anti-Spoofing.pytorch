@@ -4,10 +4,12 @@ import torch
 
 
 class AvgMeter():
-    def __init__(self, writer, name, num_iter_per_epoch):
+    def __init__(self, writer, name, num_iter_per_epoch, per_iter_vis=False):
         self.writer = writer
         self.name = name
         self.num_iter_per_epoch = num_iter_per_epoch
+        self.per_iter_vis = per_iter_vis
+
 
     def reset(self, epoch):
         self.val = 0
@@ -21,4 +23,8 @@ class AvgMeter():
         self.sum += val*n
         self.count += n
         self.avg = self.sum / self.count if self.count !=0 else 0
-        self.writer.add_scalar(self.name, self.avg, self.epoch * self.num_iter_per_epoch + self.count - 1)
+        if self.per_iter_vis:
+            self.writer.add_scalar(self.name, self.avg, self.epoch * self.num_iter_per_epoch + self.count - 1)
+        else:
+            if self.count == self.num_iter_per_epoch - 1:
+                self.writer.add_scalar(self.name, self.avg, self.epoch)

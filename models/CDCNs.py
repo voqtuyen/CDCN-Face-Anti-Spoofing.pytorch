@@ -181,7 +181,7 @@ class CDCN(nn.Module):
 
 class CDCNpp(nn.Module):
 
-    def __init__(self, basic_conv=Conv2d_cd, theta=0.7 ):   
+    def __init__(self, basic_conv=Conv2d_cd, theta=0.0):   
         super(CDCNpp, self).__init__()
         
         

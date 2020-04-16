@@ -13,8 +13,8 @@ class FASTrainer(BaseTrainer):
 
         self.network = self.network.to(device)
 
-        self.train_loss_metric = AvgMeter(writer=writer, name='Loss/train', num_iter_per_epoch=len(self.trainloader))
-        self.train_acc_metric = AvgMeter(writer=writer, name='Accuracy/train', num_iter_per_epoch=len(self.trainloader))
+        self.train_loss_metric = AvgMeter(writer=writer, name='Loss/train', num_iter_per_epoch=len(self.trainloader), per_iter_vis=True)
+        self.train_acc_metric = AvgMeter(writer=writer, name='Accuracy/train', num_iter_per_epoch=len(self.trainloader), per_iter_vis=True)
 
         self.val_loss_metric = AvgMeter(writer=writer, name='Loss/val', num_iter_per_epoch=len(self.valloader))
         self.val_acc_metric = AvgMeter(writer=writer, name='Accuracy/val', num_iter_per_epoch=len(self.valloader))
@@ -58,8 +58,8 @@ class FASTrainer(BaseTrainer):
             self.optimizer.step()
 
             preds, _ = predict(net_depth_map)
-            targets, _ = predict(depth_map)
 
+            targets, _ = predict(depth_map)
             accuracy = calc_accuracy(preds, targets)
 
             # Update metrics
@@ -88,7 +88,7 @@ class FASTrainer(BaseTrainer):
         with torch.no_grad():
             for i, (img, depth_map, label) in enumerate(self.valloader):
                 img, depth_map, label = img.to(self.device), depth_map.to(self.device), label.to(self.device)
-                net_depth_map = self.network(img)
+                net_depth_map, _, _, _, _, _ = self.network(img)
                 loss = self.criterion(net_depth_map, depth_map)
 
                 preds, score = predict(net_depth_map)
