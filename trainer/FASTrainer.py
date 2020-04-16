@@ -3,21 +3,21 @@ from random import randint
 import torch
 import torchvision
 from trainer.base import BaseTrainer
-from utils.meters import AverageMeter
+from utils.meters import AvgMeter
 from utils.eval import predict, calc_acc, add_images_tb
 
 
 class FASTrainer(BaseTrainer):
-    def __init__(self, cfg, network, optimizer, loss, lr_scheduler, device, trainloader, valloader, writer):
-        super(FASTrainer, self).__init__(cfg, network, optimizer, loss, lr_scheduler, device, trainloader, valloader, writer)
+    def __init__(self, cfg, network, optimizer, criterion, lr_scheduler, device, trainloader, valloader, writer):
+        super(FASTrainer, self).__init__(cfg, network, optimizer, criterion, lr_scheduler, device, trainloader, valloader, writer)
 
         self.network = self.network.to(device)
 
-        self.train_loss_metric = AverageMeter(writer=writer, name='Loss/train', length=len(self.trainloader))
-        self.train_acc_metric = AverageMeter(writer=writer, name='Accuracy/train', length=len(self.trainloader))
+        self.train_loss_metric = AvgMeter(writer=writer, name='Loss/train', length=len(self.trainloader))
+        self.train_acc_metric = AvgMeter(writer=writer, name='Accuracy/train', length=len(self.trainloader))
 
-        self.val_loss_metric = AverageMeter(writer=writer, name='Loss/val', length=len(self.valloader))
-        self.val_acc_metric = AverageMeter(writer=writer, name='Accuracy/val', length=len(self.valloader))
+        self.val_loss_metric = AvgMeter(writer=writer, name='Loss/val', length=len(self.valloader))
+        self.val_acc_metric = AvgMeter(writer=writer, name='Accuracy/val', length=len(self.valloader))
 
 
     def load_model(self):
