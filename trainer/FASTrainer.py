@@ -7,9 +7,9 @@ from utils.meters import AverageMeter
 from utils.eval import predict, calc_acc, add_images_tb
 
 
-class Trainer(BaseTrainer):
+class FASTrainer(BaseTrainer):
     def __init__(self, cfg, network, optimizer, loss, lr_scheduler, device, trainloader, valloader, writer):
-        super(Trainer, self).__init__(cfg, network, optimizer, loss, lr_scheduler, device, trainloader, valloader, writer)
+        super(FASTrainer, self).__init__(cfg, network, optimizer, loss, lr_scheduler, device, trainloader, valloader, writer)
 
         self.network = self.network.to(device)
 

@@ -49,3 +49,15 @@ class ContrastDepthLoss(nn.Module):    # Pearson range [-1, 1] so if < 0, abs|lo
         loss = criterion_MSE(contrast_out, contrast_label)
     
         return loss
+
+
+class DepthLoss(nn.Module):
+    def __init__(self):
+        super(DepthLoss, self).__init__()
+        self.criterion_absolute_loss = nn.MSELoss()
+        self.criterion_contrastive_loss = ContrastDepthLoss()
+
+    def forward(self, predicted_depth_map, gt_depth_map):
+        absolute_loss = self.criterion_absolute_loss(predicted_depth_map, gt_depth_map)
+        contrastive_loss = self.criterion_contrastive_loss(predicted_depth_map, gt_depth_map)
+        return absolute_loss + contrastive_loss

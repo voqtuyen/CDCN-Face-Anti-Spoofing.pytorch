@@ -5,6 +5,8 @@ from torch.utils.tensorboard import SummaryWriter
 from datasets.FASDataset import FASDataset
 from utils.transform import RandomGammaCorrection
 from utils.utils import read_cfg, get_optimizer, get_device, build_network
+from trainer.FASTrainer import FASTrainer
+from models.loss import DepthLoss
 
 
 cfg = read_cfg(cfg_file="config/CDCNpp_adam_lr1e-3.yaml")
@@ -14,6 +16,8 @@ device = get_device(cfg)
 network = build_network(cfg)
 
 optimizer = get_optimizer(cfg)
+
+criterion = DepthLoss()
 
 writer = SummaryWriter(cfg['log_dir'])
 
@@ -60,3 +64,33 @@ valset = FASDataset(
     transform=val_transform,
     smoothing=cfg['train']['smoothing']
 )
+
+trainloader = torch.utils.data.DataLoader(
+    dataset=trainset,
+    batch_size=cfg['train']['batch_size'],
+    shuffle=True,
+    num_workers=8
+)
+
+valloader = torch.utils.data.DataLoader(
+    dataset=valset,
+    batch_size=cfg['val']['batch_size'],
+    shuffle=True,
+    num_workers=8
+)
+
+trainer = FASTrainer(
+    cfg=cfg, 
+    network=network,
+    optimizer=optimizer,
+    loss=criterion,
+    lr_scheduler=None,
+    device=device,
+    trainloader=trainloader,
+    valloader=valloader,
+    writer=writer
+)
+
+trainer.train()
+
+writer.close()
