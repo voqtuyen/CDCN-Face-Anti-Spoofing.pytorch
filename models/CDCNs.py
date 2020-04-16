@@ -60,10 +60,6 @@ class Conv2d_cd(nn.Module):
             return out_normal - self.theta * out_diff
 
 
-
-
- 
-        
 class SpatialAttention(nn.Module):
     def __init__(self, kernel = 3):
         super(SpatialAttention, self).__init__()
