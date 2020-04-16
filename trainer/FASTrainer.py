@@ -85,22 +85,22 @@ class FASTrainer(BaseTrainer):
         self.val_acc_metric.reset(epoch)
 
         seed = randint(0, len(self.valloader)-1)
+        with torch.no_grad():
+            for i, (img, depth_map, label) in enumerate(self.valloader):
+                img, depth_map, label = img.to(self.device), depth_map.to(self.device), label.to(self.device)
+                net_depth_map = self.network(img)
+                loss = self.criterion(net_depth_map, depth_map)
 
-        for i, (img, depth_map, label) in enumerate(self.valloader):
-            img, depth_map, label = img.to(self.device), depth_map.to(self.device), label.to(self.device)
-            net_depth_map = self.network(img)
-            loss = self.criterion(net_depth_map, depth_map)
+                preds, score = predict(net_depth_map)
+                targets, _ = predict(depth_map)
 
-            preds, score = predict(net_depth_map)
-            targets, _ = predict(depth_map)
+                accuracy = calc_accuracy(preds, targets)
 
-            accuracy = calc_accuracy(preds, targets)
+                # Update metrics
+                self.val_loss_metric.update(loss.item())
+                self.val_acc_metric.update(accuracy.item())
 
-            # Update metrics
-            self.val_loss_metric.update(loss.item())
-            self.val_acc_metric.update(accuracy.item())
+                if i == seed:
+                    add_visualization_to_tensorboard(self.cfg, epoch, img, preds, targets, score, self.writer)
 
-            if i == seed:
-                add_visualization_to_tensorboard(self.cfg, epoch, img, preds, targets, score, self.writer)
-
-        return self.val_acc_metric.avg
+            return self.val_acc_metric.avg
