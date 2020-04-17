@@ -32,12 +32,12 @@ train_transform = transforms.Compose([
     RandomGammaCorrection(max_gamma=cfg['dataset']['augmentation']['gamma_correction'][1],
                             min_gamma=cfg['dataset']['augmentation']['gamma_correction'][0]),
     transforms.RandomResizedCrop(cfg['model']['input_size'][0]),
-    transforms.ColorJitter(
-        cfg['dataset']['augmentation']['brightness'],
-        cfg['dataset']['augmentation']['contrast'],
-        cfg['dataset']['augmentation']['saturation'],
-        cfg['dataset']['augmentation']['hue']
-    ),
+    # transforms.ColorJitter(
+    #     brightness=cfg['dataset']['augmentation']['brightness'],
+    #     contrast=cfg['dataset']['augmentation']['contrast'],
+    #     saturation=cfg['dataset']['augmentation']['saturation'],
+    #     hue=cfg['dataset']['augmentation']['hue']
+    # ),
     transforms.RandomRotation(cfg['dataset']['augmentation']['rotation_range']),
     transforms.RandomHorizontalFlip(),
     transforms.Resize(cfg['model']['input_size']),

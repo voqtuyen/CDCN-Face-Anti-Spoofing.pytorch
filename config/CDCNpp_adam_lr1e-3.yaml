@@ -7,7 +7,7 @@ dataset:
   augmentation:
     horizontal_flip: True
     rotation_range: 10
-    gamma_correction: [0.4545, 2.2]
+    gamma_correction: [0.67, 1.5]
     brightness: 0.5
     contrast: 0.5
     saturation: 0.5
